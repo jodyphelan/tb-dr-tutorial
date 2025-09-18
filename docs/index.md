@@ -67,9 +67,15 @@ Once you have installed VScode, you can connect to your GitHub Codespace using t
 4. Type `Create new Codespace` and select the option.
 5. Enter `jodyphelan/tb-dr-tutorial` in the repository field.
 6. You will then be proppted to select a branch. You should select the `main` branch.
-7. You will be asked what type of instance to create. Select `2 cores, 8GB RAM, 32 GB storage` option.
+7. You will be asked what type of instance to create. Select `4 cores, 16GB RAM, 32 GB storage` option.
 
 It should take a few minutes to create the Codespace. Once it's ready, you will be able to access the terminal and files directly from VS Code.
+
+You should see something like this:
+
+![Codespace](./images/codespace.png)
+
+If you can't see the terminal, you can open it by clicking on `Terminal` in the top menu and selecting `New Terminal`.
 
 
 ## Set up bioinformatics software
@@ -115,10 +121,12 @@ The actions above only need to be done once, so you won't need to run these comm
 Conda environments allow you to create isolated environments that have their own set of software installed. This is useful when you have different projects that require different versions of software. We will create a new conda environment called `tb` and install the required software in this environment. You can create a new conda environment by running the following command:
 
 ```bash
-conda create -n tb fastqc multiqc tb-profiler fastq-dl
+conda create -y -n tb fastqc multiqc tb-profiler fastq-dl
 ```
 
-This will create a new conda environment called `tb` and install the required software. You can activate the environment by running the following command:
+This step might take a few minutes (once you see `➜ /workspaces/tb-dr-tutorial (main) $` again you'll be ready to continue). 
+
+This command will create a new conda environment called `tb` and install the required software. You can activate the environment by running the following command:
 
 ```bash
 conda activate tb
@@ -169,15 +177,17 @@ This will generate a report called `multiqc_report.html` that summarises the qua
 Now that we have assessed the quality of the raw sequence data, we can determine the genetic resistance profiles of the TB samples using TB-Profiler. TB-Profiler is a tool that identifies genetic mutations associated with drug resistance in TB samples. You can run TB-Profiler on the raw sequence data by running the following commands:
 
 ```bash
-tb-profiler profile -1 data/ERR6635398_1.fastq.gz -2 data/ERR6635398_2.fastq.gz  -p ERR6635398 --snp_dist 100  -t 2
-tb-profiler profile -1 data/ERR6635159_1.fastq.gz -2 data/ERR6635159_2.fastq.gz  -p ERR6635159 --snp_dist 100  -t 2
-tb-profiler profile -1 data/ERR6635124_1.fastq.gz -2 data/ERR6635124_2.fastq.gz  -p ERR6635124 --snp_dist 100  -t 2
-tb-profiler profile -1 data/ERR6635248_1.fastq.gz -2 data/ERR6635248_2.fastq.gz  -p ERR6635248 --snp_dist 100  -t 2
-tb-profiler profile -1 data/ERR6635174_1.fastq.gz -2 data/ERR6635174_2.fastq.gz  -p ERR6635174 --snp_dist 100  -t 2
-tb-profiler profile -1 data/ERR6634973_1.fastq.gz -2 data/ERR6634973_2.fastq.gz  -p ERR6634973 --snp_dist 100  -t 2
+tb-profiler profile -1 data/ERR6635398_1.fastq.gz -2 data/ERR6635398_2.fastq.gz  -p ERR6635398 --snp_dist 100  -t 4 --txt
+tb-profiler profile -1 data/ERR6635159_1.fastq.gz -2 data/ERR6635159_2.fastq.gz  -p ERR6635159 --snp_dist 100  -t 4 --txt
+tb-profiler profile -1 data/ERR6635124_1.fastq.gz -2 data/ERR6635124_2.fastq.gz  -p ERR6635124 --snp_dist 100  -t 4 --txt
+tb-profiler profile -1 data/ERR6635248_1.fastq.gz -2 data/ERR6635248_2.fastq.gz  -p ERR6635248 --snp_dist 100  -t 4 --txt
+tb-profiler profile -1 data/ERR6635174_1.fastq.gz -2 data/ERR6635174_2.fastq.gz  -p ERR6635174 --snp_dist 100  -t 4 --txt
+tb-profiler profile -1 data/ERR6634973_1.fastq.gz -2 data/ERR6634973_2.fastq.gz  -p ERR6634973 --snp_dist 100  -t 4 --txt
 ```
 
-This will run TB-Profiler on each of the raw sequence data files and generate a report for each sample. The reports will contain information about the genetic resistance profiles of the samples. You can open the reports in a text editor to view the results. Specific parameters are used to specify the location of the raw sequence data files (`-1` and `-2`), the output prefix (`-p`), the SNP distance to use when performing clustering (`--snp_dist`), and the number of threads (`-t`).
+This will run TB-Profiler on each of the raw sequence data files and generate a report for each sample. The reports will contain information about the genetic resistance profiles of the samples. You can open the reports in a text editor to view the results. Specific parameters are used to specify the location of the raw sequence data files (`-1` and `-2`), the output prefix (`-p`), the SNP distance to use when performing clustering (`--snp_dist`), and the number of threads (`-t`). The `--txt` option is used to generate a text report.
+
+Take a look at one of the reports to see the results. The report will contain information about the genetic resistance profiles of the sample, including the mutations identified and their associated drug resistance.
 
 We can then combine the reports into a single report using the `collate` command:
 
@@ -186,6 +196,7 @@ tb-profiler collate --itol
 ```
 
 This will generate a few different files including:
+
     * tbprofiler.txt: A tab-delimited file containing the results of the TB-Profiler analysis
     * tbprofiler.variants.csv: A CSV file containing the variants identified by TB-Profiler
     * tbprofiler.transmission_graph.json: A JSON file containing the transmission graph of the samples    
