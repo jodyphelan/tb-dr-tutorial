@@ -59,7 +59,7 @@ Get the latest version of vscode from https://code.visualstudio.com/ and follow 
 
 #### 4. Get connected
 
-Once you have installed TigerVNC, you can connect to your GitHub Codespace using the following steps:
+Once you have installed VScode, you can connect to your GitHub Codespace using the following steps:
 
 1. Open Visual Studio Code.
 2. Install the GitHub Codespaces extension by clicking on the following link and following instructions: [GitHub Codespaces](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces).
