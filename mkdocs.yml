@@ -1,0 +1,34 @@
+site_name: 'LSHTM Omics'
+
+theme:
+  name: material
+  language: en
+  features:
+    - content.tooltips
+    - navigation.instant
+    - navigation.tabs
+    - toc.integrate
+    - content.tabs.link
+
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - abbr
+  - pymdownx.keys
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true 
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - index.md
