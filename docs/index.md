@@ -163,12 +163,12 @@ This will generate a report for each of the raw sequence data files. We will the
 multiqc .
 ```
 
-This will generate a report called `multiqc_report.html` that summarises the quality of the raw sequence data. You can open this on a web browser to view the report. Remember, if you are running this on a cloud-based platform, you will need to download the report to view it.
+This will generate a report called `multiqc_report.html` that summarises the quality of the raw sequence data. You can open this on a web browser to view the report. Remember, if you are running this on a cloud-based platform, you will need to download the report to view it. You can download it by locating the file in the file explorer on the left-hand side of VS Code, right-clicking on the file, and selecting `Download`.
 
-!!! danger "Important"
-    There are a few things that are important to look out for in the `fastqc` reports:
-    
-    * Per base sequence quality: This shows the quality of the bases at each position in the read. You want to see a high quality score (green) across most positions. It may be normal to see a drop in quality towards the end of the read.
+
+There are a few things that are important to look out for in the `fastqc/multiqc` reports, but the one you'll probably want to look at is the per base sequence quality. This shows the quality of the bases at each position in the read. You want to see a high quality score (green) across most positions. It may be normal to see a drop in quality towards the end of the read.
+
+[![MultiQC report](./images/multiqc.png)]
     
 
 
@@ -185,9 +185,125 @@ tb-profiler profile -1 data/ERR6635174_1.fastq.gz -2 data/ERR6635174_2.fastq.gz 
 tb-profiler profile -1 data/ERR6634973_1.fastq.gz -2 data/ERR6634973_2.fastq.gz  -p ERR6634973 --snp_dist 100  -t 4 --txt
 ```
 
-This will run TB-Profiler on each of the raw sequence data files and generate a report for each sample. The reports will contain information about the genetic resistance profiles of the samples. You can open the reports in a text editor to view the results. Specific parameters are used to specify the location of the raw sequence data files (`-1` and `-2`), the output prefix (`-p`), the SNP distance to use when performing clustering (`--snp_dist`), and the number of threads (`-t`). The `--txt` option is used to generate a text report.
+These commands may take a long time to run! This will run TB-Profiler on each of the raw sequence data files and generate a report for each sample. The reports will contain information about the genetic resistance profiles of the samples. You can open the reports in a text editor to view the results. Specific parameters are used to specify the location of the raw sequence data files (`-1` and `-2`), the output prefix (`-p`), the SNP distance to use when performing clustering (`--snp_dist`), and the number of threads (`-t`). The `--txt` option is used to generate a text report.
 
-Take a look at one of the reports to see the results. The report will contain information about the genetic resistance profiles of the sample, including the mutations identified and their associated drug resistance.
+Take a look at one of the reports to see the results. The report will contain information about the genetic resistance profiles of the sample, including the mutations identified and their associated drug resistance. Here we will go through the sections of the report for sample `ERR6635398`:
+
+```
+Summary
+-------
+ID: ERR6635398
+Date: 2025-09-18 22:51:00.361166
+Strain: lineage4.3.4.1
+Drug-resistance: Pre-XDR-TB
+Median Depth: 112.0
+```
+
+This section contains a summary of the sample, including the sample ID, date of analysis, strain lineage, drug resistance profile, and median depth of coverage.
+
+```
+Lineage report
+--------------
+Lineage	Fraction	Family	Rd
+lineage4	100.000	Euro-American	None
+lineage4.3	100.000	Euro-American (LAM)	None
+lineage4.3.4	100.000	Euro-American (LAM)	RD174
+lineage4.3.4.1	100.000	Euro-American (LAM)	RD174
+```
+
+This section contains information about the lineage of the sample, including the lineage, the estimated fraction of the lineage and any associated family names. The Lineage system is hierarchical, so you can see the lineage broken down into sub-lineages.
+
+```
+Resistance report
+-----------------
+Drug	Genotypic Resistance	Mechanisms
+Rifampicin	R	rpoB p.Ser450Leu (1.00)
+Isoniazid	R	katG p.Ser315Thr (1.00)
+Ethambutol	R	embB p.Met306Val (1.00)
+Pyrazinamide	R	pncA p.Leu172Pro (1.00)
+Moxifloxacin	R	gyrA p.Asp94Asn (1.00)
+Levofloxacin	R	gyrA p.Asp94Asn (1.00)
+Bedaquiline		
+Delamanid		
+Pretomanid		
+Linezolid		
+Streptomycin	R	rrs n.514A>C (1.00)
+Amikacin	R	rrs n.1401A>G (1.00)
+Kanamycin	R	rrs n.1401A>G (1.00)
+Capreomycin	R	rrs n.1401A>G (1.00)
+Clofazimine		
+Ethionamide		
+Para-aminosalicylic_acid		
+Cycloserine
+```
+
+This section contains information about the drug resistance profile of the sample, including the drugs tested for, the genotypic resistance (R = resistant, blank = no resistance identified), and the mutation identified (frequency of mutation in parentheses).
+
+```
+Resistance variants report
+-----------------
+Genome Position	Locus Tag	Gene Name	Variant Type	Change	Depth	Estimated Fraction	Drug	Confidence	Comment
+7581	Rv0006	gyrA	missense_variant	p.Asp94Asn	58	1.000	moxifloxacin,levofloxacin	Assoc w R	,High-level resistance
+761155	Rv0667	rpoB	missense_variant	p.Ser450Leu	66	1.000	rifampicin	Assoc w R	
+1472359	EBG00000313325	rrs	non_coding_transcript_exon_variant	n.514A>C	82	1.000	streptomycin	Assoc w R	
+1473246	EBG00000313325	rrs	non_coding_transcript_exon_variant	n.1401A>G	85	1.000	capreomycin,amikacin,kanamycin	Assoc w R	
+2155168	Rv1908c	katG	missense_variant	p.Ser315Thr	111	1.000	isoniazid	Assoc w R	High-level resistance
+2288727	Rv2043c	pncA	missense_variant	p.Leu172Pro	55	1.000	pyrazinamide	Assoc w R	
+4247429	Rv3795	embB	missense_variant	p.Met306Val	86	1.000	ethambutol	Assoc w R
+```
+
+This section contains information about the specific mutations identified in the sample, including the genome position, gene name, type of variant, change, depth of coverage, estimated fraction of the mutation, associated drug, WHO confidence level, and any comments.
+
+```
+Other variants report
+---------------------
+Genome Position	Locus Tag	Gene Name	Variant Type	Change	Depth	Estimated Fraction	Gene Associated Drug	Confidence	Comment
+7362	Rv0006	gyrA	missense_variant	p.Glu21Gln	77	1.000	moxifloxacin,levofloxacin	Not assoc w R	
+7585	Rv0006	gyrA	missense_variant	p.Ser95Thr	61	1.000	moxifloxacin,levofloxacin	Not assoc w R	
+9304	Rv0006	gyrA	missense_variant	p.Gly668Asp	75	1.000	moxifloxacin,levofloxacin	Not assoc w R	
+576375	Rv0486	mshA	missense_variant	p.Ala343Val	55	1.000	isoniazid,ethionamide	Uncertain significance	
+761496	Rv0667	rpoB	missense_variant	p.Tyr564His	84	0.988	rifampicin	Uncertain significance	
+762506	Rv0667	rpoB	synonymous_variant	c.2700C>T	77	0.974	rifampicin	Not assoc w R - Interim	
+764995	Rv0668	rpoC	synonymous_variant	c.1626C>G	114	1.000	rifampicin	Not assoc w R	
+775639	Rv0676c	mmpL5	missense_variant	p.Ile948Val	86	1.000	bedaquiline,clofazimine	Not assoc w R - Interim,Not assoc w R	
+781395	Rv0682	rpsL	upstream_gene_variant	c.-165T>C	109	1.000	streptomycin	Not assoc w R	
+1364434	Rv1221	sigE	missense_variant	p.Arg8Trp	119	1.000	pyrazinamide	Not assoc w R	
+1471659	EBG00000313325	rrs	upstream_gene_variant	n.-187C>T	100	1.000	capreomycin,amikacin,kanamycin,streptomycin	Uncertain significance	Not found in WHO catalogue
+1854300	Rv1644	tsnR	missense_variant	p.Leu232Pro	46	1.000	linezolid	Not assoc w R	
+1917972	Rv1694	tlyA	synonymous_variant	c.33A>G	52	1.000	capreomycin	Not assoc w R	
+2223293	Rv1979c	Rv1979c	upstream_gene_variant	c.-129A>G	79	1.000	bedaquiline,clofazimine	Not assoc w R - Interim,Not assoc w R	
+2726323	Rv2428	ahpC	missense_variant	p.Pro44Arg	90	1.000	isoniazid	Uncertain significance	
+3073868	Rv2764c	thyA	missense_variant	p.Thr202Ala	116	1.000	para-aminosalicylic_acid	Uncertain significance	Not found in WHO catalogue
+3086788	Rv2780	ald	upstream_gene_variant	c.-32T>C	172	1.000	cycloserine	Uncertain significance	Not found in WHO catalogue
+3339496	Rv2983	fbiD	missense_variant	p.Glu127Gln	56	0.982	delamanid,pretomanid,clofazimine	Uncertain significance	Not found in WHO catalogue
+3612009	Rv3236c	Rv3236c	missense_variant	p.Ala370Thr	60	1.000	pyrazinamide	Not assoc w R	
+3625065	Rv3245c	mtrB	missense_variant	p.Met517Leu	83	1.000	rifampicin,bedaquiline	Uncertain significance,Not assoc w R	
+4038287	Rv3596c	clpC1	synonymous_variant	c.2418C>T	78	1.000	pyrazinamide	Not assoc w R	
+4242643	Rv3793	embC	synonymous_variant	c.2781C>T	48	1.000	ethambutol	Not assoc w R	
+4247910	Rv3795	embB	missense_variant	p.Leu466Ser	67	1.000	ethambutol	Uncertain significance	
+4338595	Rv3862c	whiB6	upstream_gene_variant	c.-75delG	94	1.000	capreomycin,amikacin,kanamycin	Not assoc w R	
+4338732	Rv3862c	whiB6	upstream_gene_variant	c.-211C>T	148	1.000	capreomycin,amikacin,kanamycin	Uncertain significance	Not found in WHO catalogue
+4408156	Rv3919c	gid	missense_variant	p.Leu16Arg	79	1.000	streptomycin	Not assoc w R
+```
+
+This section contains information about other mutations identified in the sample that are not associated with drug resistance, including the genome position, gene name, type of variant, change, depth of coverage, estimated fraction of the mutation, associated drug (if any), WHO confidence level, and any comments.
+
+
+```
+QC failed variants report
+-------------------------
+
+Genome Position	Locus Tag	Gene Name	Variant Type	Change	Depth	Estimated Fraction	Gene Associated Drug	Confidence	Comment
+576108	Rv0486	mshA	missense_variant	p.Ala254Gly	67	0.209
+```
+
+This section contains information about mutations that failed the quality control checks. This could be due to low depth of coverage, low estimated fraction or uneven strand support. These mutations should be interpreted with caution as they may represent sequencing artefacts.
+
+
+
+
+### Combine the reports
+
 
 We can then combine the reports into a single report using the `collate` command:
 
